@@ -1,0 +1,18 @@
+{
+  "name": "test-system",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "三年共用退款審批測試系統 v1（零依賴 Node + node:sqlite）",
+  "scripts": {
+    "start": "node src/server.mjs",
+    "start:fixed": "node src/server.mjs --fixed",
+    "start:worker": "node src/worker.mjs",
+    "reset": "node src/seed.mjs",
+    "snapshot": "node src/seed.mjs --snapshot",
+    "restore": "node src/seed.mjs --restore",
+    "verify": "node --test test/system.test.mjs",
+    "poc:legal": "node poc/legal-workflow.mjs",
+    "poc:bola": "node poc/exploit-bola.mjs"
+  }
+}

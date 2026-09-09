@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>退款審批平台（測試系統 v1）</title>
+<style>
+  :root { --border: #d0d7de; --muted: #57606a; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, -apple-system, "Segoe UI", sans-serif; max-width: 64rem; margin: 2rem auto; padding: 0 1rem; color: #1f2328; }
+  h1 { font-size: 1.4rem; }
+  h2 { font-size: 1.05rem; margin-top: 0; }
+  .card { border: 1px solid var(--border); border-radius: 8px; padding: 1rem; margin-bottom: 1rem; }
+  table { border-collapse: collapse; width: 100%; }
+  th, td { border: 1px solid var(--border); padding: .45rem .6rem; text-align: left; font-size: .9rem; }
+  th { background: #f6f8fa; }
+  button { cursor: pointer; padding: .3rem .7rem; margin: .1rem .2rem; }
+  input, textarea { padding: .35rem .5rem; width: 100%; margin-bottom: .5rem; }
+  .hidden { display: none; }
+  .muted { color: var(--muted); font-size: .85rem; }
+  pre { background: #f6f8fa; border: 1px solid var(--border); padding: .6rem; overflow-x: auto; font-size: .8rem; }
+  .error { color: #cf222e; }
+  .status-badge { font-weight: 600; }
+</style>
+</head>
+<body>
+<h1>退款審批平台 <span class="muted">（測試系統 v1 · 黑箱操作介面）</span></h1>
+
+<section id="login-view" class="card">
+  <h2>登入</h2>
+  <p class="muted">
+    種子帳號：<code>acme-alice</code>／<code>acme-bob</code>（customer）、<code>acme-carol</code>（supervisor）、
+    <code>acme-dave</code>（finance）；<code>globex-*</code> 同理。密碼一律 <code>secret123</code>。
+  </p>
+  <input id="username" placeholder="username" autocomplete="username" />
+  <input id="password" type="password" placeholder="password" autocomplete="current-password" />
+  <button onclick="login()">登入</button>
+  <p id="login-error" class="error"></p>
+</section>
+
+<section id="main-view" class="hidden">
+  <div class="card">
+    <strong id="whoami"></strong>
+    <button onclick="logout()" style="float:right">登出</button>
+    <p class="muted" id="hint"></p>
+  </div>
+
+  <div class="card" id="create-card">
+    <h2>建立退款申請</h2>
+    <input id="amount" type="number" min="1" placeholder="金額（元）" />
+    <textarea id="reason" rows="2" placeholder="退款原因"></textarea>
+    <button onclick="createRefund()">送出申請</button>
+    <p id="create-error" class="error"></p>
+  </div>
+
+  <div class="card">
+    <h2>退款列表</h2>
+    <table>
+      <thead><tr><th>ID</th><th>金額</th><th>原因</th><th>狀態</th><th>操作</th></tr></thead>
+      <tbody id="refund-rows"></tbody>
+    </table>
+    <p id="list-error" class="error"></p>
+  </div>
+
+  <div class="card hidden" id="detail-card">
+    <h2>退款詳情</h2>
+    <input id="view-id" type="number" min="1" placeholder="輸入退款 ID（可用於黑箱探索）" />
+    <button onclick="viewRefundById()">檢視</button>
+    <pre id="detail-body"></pre>
+  </div>
+</section>
+
+<script>
+const PASSWORD = "secret123";
+let token = localStorage.getItem("token");
+let user = JSON.parse(localStorage.getItem("user") || "null");
+
+async function api(method, path, body) {
+  const headers = {};
+  if (token) headers.authorization = "Bearer " + token;
+  const res = await fetch(path, { method, headers, body: body ? JSON.stringify(body) : undefined });
+  let data = null;
+  try { data = await res.json(); } catch { /* 非 JSON 回應 */ }
+  if (res.status === 401) logout();
+  return { status: res.status, data };
+}
+
+function showLogin() {
+  document.getElementById("login-view").classList.remove("hidden");
+  document.getElementById("main-view").classList.add("hidden");
+}
+
+function showMain() {
+  document.getElementById("login-view").classList.add("hidden");
+  document.getElementById("main-view").classList.remove("hidden");
+  document.getElementById("whoami").textContent =
+    user.username + "（" + user.role + " · tenant " + user.tenant_id + "）";
+  document.getElementById("hint").textContent =
+    "customer 只能看到自己的退款；supervisor／finance 可看到整個 tenant 的退款。";
+  document.getElementById("create-card").classList.toggle("hidden", user.role !== "customer");
+  loadRefunds();
+}
+
+async function login() {
+  const username = document.getElementById("username").value.trim();
+  const password = document.getElementById("password").value;
+  const res = await api("POST", "/api/login", { username, password });
+  if (res.status !== 200) {
+    document.getElementById("login-error").textContent = "登入失敗：" + (res.data && res.data.error) || res.status;
+    return;
+  }
+  token = res.data.token;
+  user = res.data.user;
+  localStorage.setItem("token", token);
+  localStorage.setItem("user", JSON.stringify(user));
+  document.getElementById("login-error").textContent = "";
+  showMain();
+}
+
+function logout() {
+  token = null;
+  user = null;
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  showLogin();
+}
+
+const STATUS_CLASS = {
+  REQUESTED: "#9a6700",
+  REVIEWED: "#0969da",
+  APPROVED: "#1a7f37",
+  REJECTED: "#cf222e",
+  REFUNDED: "#6e7781",
+};
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+  }[c]));
+}
+
+function btn(label, onClick) {
+  const b = document.createElement("button");
+  b.textContent = label;
+  b.onclick = onClick;
+  return b;
+}
+
+async function loadRefunds() {
+  const res = await api("GET", "/api/refunds");
+  const tbody = document.getElementById("refund-rows");
+  document.getElementById("list-error").textContent = "";
+  if (res.status !== 200) {
+    document.getElementById("list-error").textContent = "載入失敗：" + ((res.data && res.data.error) || res.status);
+    tbody.innerHTML = "";
+    return;
+  }
+  tbody.innerHTML = "";
+  for (const r of res.data) {
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      "<td>" + r.id + "</td>" +
+      "<td>$" + (r.amount_cents / 100).toFixed(2) + "</td>" +
+      "<td>" + escapeHtml(r.reason) + "</td>" +
+      "<td><span class=\"status-badge\" style=\"color:" + (STATUS_CLASS[r.status] || "#1f2328") + "\">" + r.status + "</span></td>" +
+      "<td></td>";
+    const td = tr.lastElementChild;
+    td.appendChild(btn("檢視", () => viewRefund(r.id)));
+    if (user.role === "supervisor") {
+      if (r.status === "REQUESTED") td.appendChild(btn("審核", () => act(r.id, "review")));
+      if (r.status === "REVIEWED") td.appendChild(btn("核准", () => act(r.id, "approve")));
+      if (r.status === "REQUESTED" || r.status === "REVIEWED") td.appendChild(btn("拒絕", () => act(r.id, "reject")));
+    }
+    if (user.role === "finance" && r.status === "APPROVED") td.appendChild(btn("執行退款", () => act(r.id, "refund")));
+    tbody.appendChild(tr);
+  }
+  if (res.data.length === 0) {
+    const tr = document.createElement("tr");
+    tr.innerHTML = '<td colspan="5" class="muted">沒有退款記錄</td>';
+    tbody.appendChild(tr);
+  }
+}
+
+async function createRefund() {
+  const amountCents = Math.round(Number(document.getElementById("amount").value) * 100);
+  const reason = document.getElementById("reason").value.trim();
+  const res = await api("POST", "/api/refunds", { amountCents, reason });
+  document.getElementById("create-error").textContent = "";
+  if (res.status !== 201) {
+    document.getElementById("create-error").textContent = "建立失敗：" + ((res.data && res.data.error) || res.status);
+    return;
+  }
+  document.getElementById("amount").value = "";
+  document.getElementById("reason").value = "";
+  loadRefunds();
+}
+
+async function act(id, action) {
+  const res = await api("POST", "/api/refunds/" + id + "/" + action);
+  if (res.status !== 200) alert(action + " 失敗：" + ((res.data && res.data.error) || res.status));
+  loadRefunds();
+}
+
+async function viewRefund(id) {
+  const res = await api("GET", "/api/refunds/" + id);
+  const card = document.getElementById("detail-card");
+  card.classList.remove("hidden");
+  document.getElementById("detail-body").textContent =
+    res.status === 200
+      ? JSON.stringify(res.data, null, 2)
+      : "無法檢視（status " + res.status + "）：" + ((res.data && res.data.error) || "無資料");
+}
+
+function viewRefundById() {
+  const id = document.getElementById("view-id").value;
+  if (id) viewRefund(id);
+}
+
+if (token && user) showMain();
+else showLogin();
+</script>
+</body>
+</html>
