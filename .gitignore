@@ -1,0 +1,7 @@
+# Freebuff 客戶端內部元資料
+.freebuff/
+
+# 執行期產物
+build/node_modules/
+
+# test-system 執行期產物（另有 test-system/.gitignore 涵蓋 db/、traces/）
