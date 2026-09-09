@@ -1,0 +1,238 @@
+{"kind":"deck","id":"pr/ilesv5","name":"Deck"}
+{"kind":"layout","layoutId":"30204d29-53a5-46bf-937b-79a87422a233","name":"Master","type":"master"}
+{"kind":"layout","layoutId":"d69d985e-6552-417c-ac43-1c16e589f7c2","name":"Title Slide","type":"title"}
+{"kind":"slide","id":"sl/xyjmz7","slide":1,"title":"從黑箱行為推論到","textShapes":4}
+{"kind":"shape","id":"sh/e543mdor","slide":1,"bbox":[0,0,610,720]}
+{"kind":"shape","id":"sh/f6d4vi5c","slide":1,"bbox":[66,122,72,6]}
+{"kind":"textbox","id":"sh/ovmls769","slide":1,"text":"從黑箱行為推論到\n後端安全約束修補","textPreview":"從黑箱行為推論到 | 後端安全約束修補","textChars":17,"textLines":2,"bbox":[66,154,560,175]}
+{"kind":"textbox","id":"sh/pwfm1cne","slide":1,"text":"Behavior Inference\nEnforcement Localization\nConstraint-Guided Repair","textPreview":"Behavior Inference | Enforcement Localization | Constraint-Guided Repair","textChars":68,"textLines":3,"bbox":[68,344,510,86]}
+{"kind":"textbox","id":"sh/2t43qxo3","slide":1,"text":"跨實驗室三年期研究構想討論","textPreview":"跨實驗室三年期研究構想討論","textChars":13,"textLines":1,"bbox":[68,512,460,38]}
+{"kind":"textbox","id":"sh/3ud4z25o","slide":1,"text":"2026-09-10","textPreview":"2026-09-10","textChars":10,"textLines":1,"bbox":[68,562,230,28]}
+{"kind":"image","id":"im/0n6xsvmd","slide":1,"name":"","alt":"外部操作軌跡對齊程式圖並形成安全補丁的抽象示意","bbox":[0,0,1280,720]}
+{"kind":"notes","id":"nt/xyjmz7","slide":1,"text":"開場：今天希望討論的不是完整系統規格，而是一個可被三年逐步驗證的科學問題。\n核心問題是，能否把外部觀察到的業務違規，轉換成後端可定位、可修補、可驗證的安全不變量。"}
+{"kind":"slide","id":"sl/jqlwxk","slide":2,"title":"Golden Case：未付款也能出貨","textShapes":16}
+{"kind":"textbox","id":"sh/1832tsn2","slide":2,"text":"Golden Case：未付款也能出貨","textPreview":"Golden Case：未付款也能出貨","textChars":19,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/els3yx4b","slide":2,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/fm1kri5w","slide":2,"text":"相同的合法 API，因為缺少前置狀態檢查而形成業務邏輯漏洞","textPreview":"相同的合法 API，因為缺少前置狀態檢查而形成業務邏輯漏洞","textChars":29,"textLines":1,"bbox":[66,94,900,36]}
+{"kind":"textbox","id":"sh/obul47md","slide":2,"text":"合法流程","textPreview":"合法流程","textChars":4,"textLines":1,"bbox":[72,165,120,32]}
+{"kind":"shape","id":"sh/pc32xc3y","slide":2,"bbox":[210,150,155,58]}
+{"kind":"textbox","id":"sh/29c32x4n","slide":2,"text":"CREATED","textPreview":"CREATED","textChars":7,"textLines":1,"bbox":[218,158,139,42]}
+{"kind":"shape","id":"sh/nalkv258","slide":2,"bbox":[455,150,155,58]}
+{"kind":"textbox","id":"sh/cfel87mp","slide":2,"text":"PAID","textPreview":"PAID","textChars":4,"textLines":1,"bbox":[463,158,139,42]}
+{"kind":"shape","id":"sh/xgnm1c3a","slide":2,"bbox":[700,150,155,58]}
+{"kind":"textbox","id":"sh/dg7mlcru","slide":2,"text":"SHIPPED","textPreview":"SHIPPED","textChars":7,"textLines":1,"bbox":[708,158,139,42]}
+{"kind":"shape","id":"sh/sfelc7ap","slide":2,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/re5kj294","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/qdw3ahsj","slide":2,"text":"成功","textPreview":"成功","textChars":2,"textLines":1,"bbox":[930,160,110,36]}
+{"kind":"textbox","id":"sh/147mpwr6","slide":2,"text":"違規流程","textPreview":"違規流程","textChars":4,"textLines":1,"bbox":[72,310,120,32]}
+{"kind":"shape","id":"sh/0jylgral","slide":2,"bbox":[210,295,155,58]}
+{"kind":"textbox","id":"sh/zip4nm90","slide":2,"text":"CREATED","textPreview":"CREATED","textChars":7,"textLines":1,"bbox":[218,303,139,42]}
+{"kind":"shape","id":"sh/ehg3ehsf","slide":2,"bbox":[700,295,155,58]}
+{"kind":"textbox","id":"sh/hon2dsr2","slide":2,"text":"SHIPPED","textPreview":"SHIPPED","textChars":7,"textLines":1,"bbox":[708,303,139,42]}
+{"kind":"shape","id":"sh/gnul4nah","slide":2,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/8rylknid","slide":2,"text":"仍然成功","textPreview":"仍然成功","textChars":4,"textLines":1,"bbox":[930,305,140,36]}
+{"kind":"shape","id":"sh/9s7mtszi","slide":2,"bbox":[210,430,845,125]}
+{"kind":"textbox","id":"sh/mpg3ix07","slide":2,"text":"缺失的不變量","textPreview":"缺失的不變量","textChars":6,"textLines":1,"bbox":[240,448,210,30]}
+{"kind":"textbox","id":"sh/7qp4r2hs","slide":2,"text":"ship(order)  ⇒  order.status == PAID","textPreview":"ship(order)  ⇒  order.status == PAID","textChars":36,"textLines":1,"bbox":[240,484,760,46]}
+{"kind":"textbox","id":"sh/wvilo7i9","slide":2,"text":"研究難點：系統如何從外部證據推導這個條件？","textPreview":"研究難點：系統如何從外部證據推導這個條件？","textChars":21,"textLines":1,"bbox":[210,580,845,38]}
+{"kind":"shape","id":"sh/hwrmxczu","slide":2,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/ut03mx03","slide":2,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/jqlwxk","slide":2,"text":"先用一個案例固定全場語境。正常流程先付款再出貨，攻擊流程跳過付款卻仍完成出貨。\n輸入格式都合法，問題出在後端沒有執行狀態前置條件。這類漏洞未必具有典型惡意資料流。"}
+{"kind":"slide","id":"sl/8nkojw","slide":3,"title":"觀察到的行為不能直接當成安全規範","textShapes":14}
+{"kind":"textbox","id":"sh/f2lozi5k","slide":3,"text":"觀察到的行為不能直接當成安全規範","textPreview":"觀察到的行為不能直接當成安全規範","textChars":16,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/03upsnm5","slide":3,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/14361sna","slide":3,"text":"第一年的關鍵在於建立規範成立的對照證據，狀態圖只是中間產物","textPreview":"第一年的關鍵在於建立規範成立的對照證據，狀態圖只是中間產物","textChars":29,"textLines":1,"bbox":[66,94,1030,36]}
+{"kind":"shape","id":"sh/25c7ux4v","slide":3,"bbox":[72,165,465,250]}
+{"kind":"textbox","id":"sh/n65o325g","slide":3,"text":"只有單一路徑觀察","textPreview":"只有單一路徑觀察","textChars":8,"textLines":1,"bbox":[102,188,380,36]}
+{"kind":"textbox","id":"sh/o7epw7m1","slide":3,"text":"系統看到 CREATED 直接進入 SHIPPED","textPreview":"系統看到 CREATED 直接進入 SHIPPED","textChars":25,"textLines":1,"bbox":[102,250,380,34]}
+{"kind":"textbox","id":"sh/p8nq5cnm","slide":3,"text":"可能是漏洞，也可能是管理員流程或貨到付款","textPreview":"可能是漏洞，也可能是管理員流程或貨到付款","textChars":20,"textLines":1,"bbox":[102,302,380,64]}
+{"kind":"shape","id":"sh/i9s7it4r","slide":3,"bbox":[620,165,588,250]}
+{"kind":"textbox","id":"sh/ja1ory5c","slide":3,"text":"成對的對照軌跡","textPreview":"成對的對照軌跡","textChars":7,"textLines":1,"bbox":[650,188,510,36]}
+{"kind":"textbox","id":"sh/vmdwrix0","slide":3,"text":"只改變前置狀態、角色或資源所有者","textPreview":"只改變前置狀態、角色或資源所有者","textChars":16,"textLines":1,"bbox":[650,250,500,34]}
+{"kind":"textbox","id":"sh/ul4vydwf","slide":3,"text":"比較 API 結果、GUI 呈現與持久化狀態","textPreview":"比較 API 結果、GUI 呈現與持久化狀態","textChars":22,"textLines":1,"bbox":[650,302,500,34]}
+{"kind":"textbox","id":"sh/h8vet8fq","slide":3,"text":"產生有證據與信心的候選不變量","textPreview":"產生有證據與信心的候選不變量","textChars":14,"textLines":1,"bbox":[650,352,500,34]}
+{"kind":"shape","id":"sh/g7md0nel","slide":3,"bbox":[170,480,940,105]}
+{"kind":"textbox","id":"sh/7itwnyxo","slide":3,"text":"研究假說","textPreview":"研究假說","textChars":4,"textLines":1,"bbox":[198,500,140,28]}
+{"kind":"textbox","id":"sh/6hkvutw3","slide":3,"text":"合法／違規對照能提供缺失安全條件的外部證據","textPreview":"合法／違規對照能提供缺失安全條件的外部證據","textChars":21,"textLines":1,"bbox":[345,492,730,50]}
+{"kind":"textbox","id":"sh/tkvep8fu","slide":3,"text":"評估真值另由規格、已知修補或人工確認建立","textPreview":"評估真值另由規格、已知修補或人工確認建立","textChars":20,"textLines":1,"bbox":[345,544,730,25]}
+{"kind":"shape","id":"sh/8j2dw3e9","slide":3,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/jetwjyxs","slide":3,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/8nkojw","slide":3,"text":"這一頁主動承認最容易被質疑的地方。黑箱只能觀察行為，不能從一次成功直接推導應然規範。\n我們以最小差異對照建立候選不變量，並用獨立真值評估，避免系統自己定義答案再評估自己。"}
+{"kind":"slide","id":"sl/9uwkxe","slide":4,"title":"跨年度核心假說","textShapes":14}
+{"kind":"textbox","id":"sh/zypo3yxs","slide":4,"text":"跨年度核心假說","textPreview":"跨年度核心假說","textChars":7,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/0zypcjed","slide":4,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/l0765ofy","slide":4,"text":"給定成對的合法／違規軌跡及後端程式碼","textPreview":"給定成對的合法／違規軌跡及後端程式碼","textChars":18,"textLines":1,"bbox":[110,135,1060,46]}
+{"kind":"textbox","id":"sh/q9w769wb","slide":4,"text":"能否推導遭違反的安全不變量，定位其執行位置，\n並生成阻斷同類違規且保存合法流程的跨函式補丁？","textPreview":"能否推導遭違反的安全不變量，定位其執行位置， | 並生成阻斷同類違規且保存合法流程的跨函式補丁？","textChars":46,"textLines":2,"bbox":[110,204,1060,118]}
+{"kind":"shape","id":"sh/ba5ozexw","slide":4,"bbox":[82,410,230,118]}
+{"kind":"textbox","id":"sh/cbep8jeh","slide":4,"text":"行為證據","textPreview":"行為證據","textChars":4,"textLines":1,"bbox":[100,428,194,30]}
+{"kind":"textbox","id":"sh/dwn61of2","slide":4,"text":"合法與違規軌跡","textPreview":"合法與違規軌跡","textChars":7,"textLines":1,"bbox":[100,467,194,42]}
+{"kind":"shape","id":"sh/a507idwf","slide":4,"bbox":[377,410,230,118]}
+{"kind":"textbox","id":"sh/v698bix0","slide":4,"text":"安全條件","textPreview":"安全條件","textChars":4,"textLines":1,"bbox":[395,428,194,30]}
+{"kind":"textbox","id":"sh/zepozypg","slide":4,"text":"狀態與所有權不變量","textPreview":"狀態與所有權不變量","textChars":9,"textLines":1,"bbox":[395,467,194,42]}
+{"kind":"shape","id":"sh/ydg7qtob","slide":4,"bbox":[672,410,230,118]}
+{"kind":"textbox","id":"sh/lg7q187m","slide":4,"text":"程式位置","textPreview":"程式位置","textChars":4,"textLines":1,"bbox":[690,428,194,30]}
+{"kind":"textbox","id":"sh/kfyps361","slide":4,"text":"缺失或錯置的檢查","textPreview":"缺失或錯置的檢查","textChars":8,"textLines":1,"bbox":[690,467,194,42]}
+{"kind":"shape","id":"sh/72p83ips","slide":4,"bbox":[967,410,230,118]}
+{"kind":"textbox","id":"sh/m1g7udo7","slide":4,"text":"可驗證補丁","textPreview":"可驗證補丁","textChars":5,"textLines":1,"bbox":[985,428,194,30]}
+{"kind":"textbox","id":"sh/947q587y","slide":4,"text":"攻擊阻斷與功能保存","textPreview":"攻擊阻斷與功能保存","textChars":9,"textLines":1,"bbox":[985,467,194,42]}
+{"kind":"shape","id":"sh/83ypw36d","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/v6987ipo","slide":4,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/u507ydo3","slide":4,"bbox":[0,0,0,0]}
+{"kind":"textbox","id":"sh/61krqh8b","slide":4,"text":"同一份證據逐年升級，不把三年拆成互不相干的工具","textPreview":"同一份證據逐年升級，不把三年拆成互不相干的工具","textChars":23,"textLines":1,"bbox":[200,585,880,38]}
+{"kind":"shape","id":"sh/r2tszm9w","slide":4,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/s329srqh","slide":4,"text":"跨實驗室提案討論　核心假說","textPreview":"跨實驗室提案討論　核心假說","textChars":13,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/9uwkxe","slide":4,"text":"這是整份提案最重要的一句。三年共同回答同一個問題，差別只在研究階段與可驗證產物。\n跨年度核心資產包含軌跡、候選不變量、證據信心與程式對齊結果。"}
+{"kind":"slide","id":"sl/fc9vhr","slide":5,"title":"三年研究路徑與年度閘門","textShapes":23}
+{"kind":"textbox","id":"sh/8fi1wbu1","slide":5,"text":"三年研究路徑與年度閘門","textPreview":"三年研究路徑與年度閘門","textChars":11,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/7ep0n6tw","slide":5,"text":"05","textPreview":"05","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/mdgju1cb","slide":5,"text":"每一年都留下可獨立評估的產物，後續年度不假設前一年完全正確","textPreview":"每一年都留下可獨立評估的產物，後續年度不假設前一年完全正確","textChars":29,"textLines":1,"bbox":[66,94,1000,36]}
+{"kind":"shape","id":"sh/hkritgby","slide":5,"bbox":[70,158,330,395]}
+{"kind":"shape","id":"sh/wji10bad","slide":5,"bbox":[70,158,330,12]}
+{"kind":"textbox","id":"sh/vi90r6ts","slide":5,"text":"YEAR 1","textPreview":"YEAR 1","textChars":6,"textLines":1,"bbox":[94,188,110,28]}
+{"kind":"textbox","id":"sh/uh0jy1c7","slide":5,"text":"探測與建模","textPreview":"探測與建模","textChars":5,"textLines":1,"bbox":[94,225,280,40]}
+{"kind":"textbox","id":"sh/do7ihwbe","slide":5,"text":"研究問題","textPreview":"研究問題","textChars":4,"textLines":1,"bbox":[94,290,100,25]}
+{"kind":"textbox","id":"sh/cnehorut","slide":5,"text":"GUI／API 對照軌跡能否發現可重現違規？","textPreview":"GUI／API 對照軌跡能否發現可重現違規？","textChars":22,"textLines":1,"bbox":[94,320,282,76]}
+{"kind":"shape","id":"sh/a9szi9of","slide":5,"bbox":[94,422,282,1]}
+{"kind":"textbox","id":"sh/va1gbe50","slide":5,"text":"年度輸出","textPreview":"年度輸出","textChars":4,"textLines":1,"bbox":[94,440,100,25]}
+{"kind":"textbox","id":"sh/wvahkj65","slide":5,"text":"安全狀態模型\n合法與違規 Trace\n候選 Invariant","textPreview":"安全狀態模型 | 合法與違規 Trace | 候選 Invariant","textChars":31,"textLines":3,"bbox":[94,472,282,64]}
+{"kind":"shape","id":"sh/xw3ydonq","slide":5,"bbox":[438,158,330,395]}
+{"kind":"shape","id":"sh/ixczmtob","slide":5,"bbox":[438,158,330,12]}
+{"kind":"textbox","id":"sh/jyl0fy5w","slide":5,"text":"YEAR 2","textPreview":"YEAR 2","textChars":6,"textLines":1,"bbox":[462,188,110,28]}
+{"kind":"textbox","id":"sh/kzuho36h","slide":5,"text":"診斷與定位","textPreview":"診斷與定位","textChars":5,"textLines":1,"bbox":[462,225,280,40]}
+{"kind":"textbox","id":"sh/503ih8n2","slide":5,"text":"研究問題","textPreview":"研究問題","textChars":4,"textLines":1,"bbox":[462,290,100,25]}
+{"kind":"textbox","id":"sh/61czqton","slide":5,"text":"能否把不變量映射到後端缺失檢查位置？","textPreview":"能否把不變量映射到後端缺失檢查位置？","textChars":18,"textLines":1,"bbox":[462,320,282,76]}
+{"kind":"shape","id":"sh/r2l0jy5s","slide":5,"bbox":[462,422,282,1]}
+{"kind":"textbox","id":"sh/365g7yl0","slide":5,"text":"年度輸出","textPreview":"年度輸出","textChars":4,"textLines":1,"bbox":[462,440,100,25]}
+{"kind":"textbox","id":"sh/25wfedkf","slide":5,"text":"Trace-to-CPG 對齊\nTop-k Enforcement Point\n缺失 Predicate","textPreview":"Trace-to-CPG 對齊 | Top-k Enforcement Point | 缺失 Predicate","textChars":52,"textLines":3,"bbox":[462,472,282,64]}
+{"kind":"shape","id":"sh/psny9836","slide":5,"bbox":[806,158,330,395]}
+{"kind":"shape","id":"sh/o7ehg32l","slide":5,"bbox":[806,158,330,12]}
+{"kind":"textbox","id":"sh/f2lg3yl4","slide":5,"text":"YEAR 3","textPreview":"YEAR 3","textChars":6,"textLines":1,"bbox":[830,188,110,28]}
+{"kind":"textbox","id":"sh/e1cfatkj","slide":5,"text":"修補與驗證","textPreview":"修補與驗證","textChars":5,"textLines":1,"bbox":[830,225,280,40]}
+{"kind":"textbox","id":"sh/14ny583a","slide":5,"text":"研究問題","textPreview":"研究問題","textChars":4,"textLines":1,"bbox":[830,290,100,25]}
+{"kind":"textbox","id":"sh/g3uxc32p","slide":5,"text":"能否阻斷同類攻擊並保存合法工作流程？","textPreview":"能否阻斷同類攻擊並保存合法工作流程？","textChars":18,"textLines":1,"bbox":[830,320,282,76]}
+{"kind":"shape","id":"sh/7ylgzels","slide":5,"bbox":[830,422,282,1]}
+{"kind":"textbox","id":"sh/6xcf6t47","slide":5,"text":"年度輸出","textPreview":"年度輸出","textChars":4,"textLines":1,"bbox":[830,440,100,25]}
+{"kind":"textbox","id":"sh/w3qd0fi5","slide":5,"text":"Multi-Hunk Patch\n三層驗證證據\n修補資料集","textPreview":"Multi-Hunk Patch | 三層驗證證據 | 修補資料集","textChars":29,"textLines":3,"bbox":[830,472,282,64]}
+{"kind":"shape","id":"sh/x4je9kjq","slide":5,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ah8vypkz","slide":5,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/v2hc7u1k","slide":5,"bbox":[245,590,790,52]}
+{"kind":"textbox","id":"sh/k7ad4zih","slide":5,"text":"年度閘門：以人工真值輸入與自動產生輸入分開評估，量化誤差傳播","textPreview":"年度閘門：以人工真值輸入與自動產生輸入分開評估，量化誤差傳播","textChars":30,"textLines":1,"bbox":[265,598,750,35]}
+{"kind":"shape","id":"sh/58jed4j2","slide":5,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/i5sv2p0b","slide":5,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/fc9vhr","slide":5,"text":"每年都有獨立研究問題與評估指標。即使第一年自動化模型尚未完美，第二年仍可先使用人工真值軌跡評估定位能力。\n同理，第三年可分別使用正確定位與自動定位結果，量化前段誤差如何影響修補。"}
+{"kind":"slide","id":"sl/qaxo98","slide":6,"title":"微型 PoC 已驗證核心閉環","textShapes":8}
+{"kind":"textbox","id":"sh/sjqdoni5","slide":6,"text":"微型 PoC 已驗證核心閉環","textPreview":"微型 PoC 已驗證核心閉環","textChars":14,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/7ihwfi1k","slide":6,"text":"06","textPreview":"06","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/6h8vmd0z","slide":6,"text":"本機 Node.js 標準函式庫案例，零外部相依，四項測試皆通過","textPreview":"本機 Node.js 標準函式庫案例，零外部相依，四項測試皆通過","textChars":32,"textLines":1,"bbox":[66,94,1000,36]}
+{"kind":"shape","id":"sh/g7adsni1","slide":6,"bbox":[120,535,1040,82]}
+{"kind":"textbox","id":"sh/f61wji1g","slide":6,"text":"目前人工提供","textPreview":"目前人工提供","textChars":6,"textLines":1,"bbox":[148,551,180,24]}
+{"kind":"textbox","id":"sh/ul8vqx0v","slide":6,"text":"目標流程、真值、不變量與程式位置","textPreview":"目標流程、真值、不變量與程式位置","textChars":16,"textLines":1,"bbox":[148,579,395,24]}
+{"kind":"textbox","id":"sh/xcfe98ji","slide":6,"text":"研究逐年自動化","textPreview":"研究逐年自動化","textChars":7,"textLines":1,"bbox":[635,551,190,24]}
+{"kind":"textbox","id":"sh/wb6dg3ix","slide":6,"text":"推論、定位、修補與驗證","textPreview":"推論、定位、修補與驗證","textChars":11,"textLines":1,"bbox":[635,579,390,24]}
+{"kind":"shape","id":"sh/uh07i9wr","slide":6,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/vit8bedc","slide":6,"text":"實際測試：4 passed，0 failed　2026-09-09","textPreview":"實際測試：4 passed，0 failed　2026-09-09","textChars":33,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"table","id":"tb/8z2x4ze9","slide":6,"name":"","rows":5,"cols":5,"preview":"後端 | 操作序列 | HTTP | 持久化狀態 | 證明","bbox":[70,160,1140,330]}
+{"kind":"notes","id":"nt/qaxo98","slide":6,"text":"這不是宣稱研究已完成，而是證明核心閉環在可控案例中可重現。\n四項本機測試分別覆蓋漏洞版正常流程、漏洞觸發、修補阻斷及修補後正常流程。\nDemo 指令：進入 POC/golden-case 後執行 node --test .\\poc.test.mjs。"}
+{"kind":"slide","id":"sl/zqq6im","slide":7,"title":"第一年：由對照行為建立安全模型","textShapes":13}
+{"kind":"textbox","id":"sh/etcvq1oz","slide":7,"text":"第一年：由對照行為建立安全模型","textPreview":"第一年：由對照行為建立安全模型","textChars":15,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/1w3e1gnq","slide":7,"text":"07","textPreview":"07","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/0vudsb65","slide":7,"text":"RQ1　GUI 與可觀測 API 流量能否支撐可重現的狀態／授權違規判定？","textPreview":"RQ1　GUI 與可觀測 API 流量能否支撐可重現的狀態／授權違規判定？","textChars":37,"textLines":1,"bbox":[66,94,1110,40]}
+{"kind":"shape","id":"sh/ny5w365w","slide":7,"bbox":[80,190,220,58]}
+{"kind":"textbox","id":"sh/mxcvulob","slide":7,"text":"語意 GUI 探索","textPreview":"語意 GUI 探索","textChars":9,"textLines":1,"bbox":[88,198,204,42]}
+{"kind":"shape","id":"sh/9kne5gnm","slide":7,"bbox":[390,190,230,58]}
+{"kind":"textbox","id":"sh/ozexwb6h","slide":7,"text":"安全相關狀態抽象","textPreview":"安全相關狀態抽象","textChars":8,"textLines":1,"bbox":[398,198,214,42]}
+{"kind":"shape","id":"sh/321wrmpc","slide":7,"bbox":[710,190,220,58]}
+{"kind":"textbox","id":"sh/21sviho7","slide":7,"text":"最小差異擾動","textPreview":"最小差異擾動","textChars":6,"textLines":1,"bbox":[718,198,204,42]}
+{"kind":"shape","id":"sh/kja9k7mx","slide":7,"bbox":[1020,190,190,58]}
+{"kind":"textbox","id":"sh/lkjatcni","slide":7,"text":"可重現 Exploit Trace","textPreview":"可重現 Exploit Trace","textChars":17,"textLines":1,"bbox":[1028,198,174,42]}
+{"kind":"shape","id":"sh/yh8rix4r","slide":7,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jihsr25c","slide":7,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/8na9ormt","slide":7,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/tojaxcne","slide":7,"bbox":[80,320,530,245]}
+{"kind":"textbox","id":"sh/6lsrmh43","slide":7,"text":"攻擊成功 Oracle","textPreview":"攻擊成功 Oracle","textChars":11,"textLines":1,"bbox":[110,342,470,36]}
+{"kind":"textbox","id":"sh/7m1svm5o","slide":7,"text":"敏感操作確實發生\n必要前置條件未成立\n結果可重新查詢或跨帳號確認\n相同軌跡能穩定重現","textPreview":"敏感操作確實發生 | 必要前置條件未成立 | 結果可重新查詢或跨帳號確認 | 相同軌跡能穩定重現","textChars":42,"textLines":4,"bbox":[110,400,450,135]}
+{"kind":"shape","id":"sh/or69cnmp","slide":7,"bbox":[670,320,540,245]}
+{"kind":"textbox","id":"sh/9szqlsna","slide":7,"text":"黑箱邊界","textPreview":"黑箱邊界","textChars":4,"textLines":1,"bbox":[700,342,480,36]}
+{"kind":"textbox","id":"sh/p8rq9ofy","slide":7,"text":"只使用 GUI、Accessibility Tree 與 GUI 觸發的可觀測流量\n\n不反編譯、不分析 Bundle、不修改客戶端","textPreview":"只使用 GUI、Accessibility Tree 與 GUI 觸發的可觀測流量 |  | 不反編譯、不分析 Bundle、不修改客戶端","textChars":65,"textLines":3,"bbox":[700,402,460,115]}
+{"kind":"textbox","id":"sh/47ypgjyd","slide":7,"text":"評估：漏洞發現率、誤報率、重現率與探索成本","textPreview":"評估：漏洞發現率、誤報率、重現率與探索成本","textChars":21,"textLines":1,"bbox":[200,610,880,35]}
+{"kind":"shape","id":"sh/3mponex8","slide":7,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/2lg7e9gn","slide":7,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/zqq6im","slide":7,"text":"第一年聚焦兩類缺失約束：業務狀態轉移，以及角色或資源所有權違規。\n不把 HTTP 200 當成漏洞。系統還要確認敏感結果真的發生，並能重現。\n憑證綁定或應用層加密若無法在不修改客戶端的情況下觀察，列為資料集限制。"}
+{"kind":"slide","id":"sl/3atcpl","slide":8,"title":"第二年：由外部軌跡縮小缺失檢查位置","textShapes":14}
+{"kind":"textbox","id":"sh/x8z6d0ze","slide":8,"text":"第二年：由外部軌跡縮小缺失檢查位置","textPreview":"第二年：由外部軌跡縮小缺失檢查位置","textChars":17,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/a5o725g3","slide":8,"text":"08","textPreview":"08","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/b6xobqho","slide":8,"text":"RQ2　對照軌跡與後端 CPG 能否提高安全不變量及執行位置的 Top-k 準確率？","textPreview":"RQ2　對照軌跡與後端 CPG 能否提高安全不變量及執行位置的 Top-k 準確率？","textChars":42,"textLines":1,"bbox":[66,94,1120,40]}
+{"kind":"shape","id":"sh/o3650vyx","slide":8,"bbox":[70,165,485,410]}
+{"kind":"textbox","id":"sh/94f690zi","slide":8,"text":"Trace-to-Code 分層對齊","textPreview":"Trace-to-Code 分層對齊","textChars":18,"textLines":1,"bbox":[100,188,420,35]}
+{"kind":"shape","id":"sh/m1onylgr","slide":8,"bbox":[112,250,390,58]}
+{"kind":"textbox","id":"sh/n2xo7qhc","slide":8,"text":"HTTP Route 對應 Handler","textPreview":"HTTP Route 對應 Handler","textChars":21,"textLines":1,"bbox":[120,258,374,42]}
+{"kind":"shape","id":"sh/0f65wby1","slide":8,"bbox":[112,322,390,58]}
+{"kind":"textbox","id":"sh/10f65gzm","slide":8,"text":"Request／Identity 對應 Variable","textPreview":"Request／Identity 對應 Variable","textChars":28,"textLines":1,"bbox":[120,330,374,42]}
+{"kind":"shape","id":"sh/doz29cv2","slide":8,"bbox":[112,394,390,58]}
+{"kind":"textbox","id":"sh/snq107ex","slide":8,"text":"Object ID 對應 ORM Entity","textPreview":"Object ID 對應 ORM Entity","textChars":23,"textLines":1,"bbox":[120,402,374,42]}
+{"kind":"shape","id":"sh/rmxk72dc","slide":8,"bbox":[112,466,390,58]}
+{"kind":"textbox","id":"sh/qlojyxwr","slide":8,"text":"Handler 到 Sensitive Operation","textPreview":"Handler 到 Sensitive Operation","textChars":29,"textLines":1,"bbox":[120,474,374,42]}
+{"kind":"shape","id":"sh/5kf25cv6","slide":8,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/4j61w7el","slide":8,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/jix032d0","slide":8,"bbox":[0,0,0,0]}
+{"kind":"shape","id":"sh/ihojuxwf","slide":8,"bbox":[620,165,590,245]}
+{"kind":"textbox","id":"sh/hgfi1sva","slide":8,"text":"缺失檢查","textPreview":"缺失檢查","textChars":4,"textLines":1,"bbox":[650,188,510,30]}
+{"kind":"textbox","id":"sh/wv61snep","slide":8,"text":"function ship(order) {\n  // Missing: order.status == PAID\n  order.status = \"SHIPPED\";\n}","textPreview":"function ship(order) { |   // Missing: order.status == PAID |   order.status = \"SHIPPED\"; | }","textChars":87,"textLines":4,"bbox":[655,238,505,135]}
+{"kind":"shape","id":"sh/8zq1onml","slide":8,"bbox":[620,438,590,137]}
+{"kind":"textbox","id":"sh/90j2hs3q","slide":8,"text":"輸出排序後的候選，不預設唯一精確對齊","textPreview":"輸出排序後的候選，不預設唯一精確對齊","textChars":18,"textLines":1,"bbox":[650,458,530,34]}
+{"kind":"textbox","id":"sh/mx8jmx4f","slide":8,"text":"File／Function／Predicate Top-k、證據與信心","textPreview":"File／Function／Predicate Top-k、證據與信心","textChars":35,"textLines":1,"bbox":[650,512,530,30]}
+{"kind":"textbox","id":"sh/nyhkf2l0","slide":8,"text":"分析：Dominator、控制依賴、資料依賴及跨入口覆蓋","textPreview":"分析：Dominator、控制依賴、資料依賴及跨入口覆蓋","textChars":28,"textLines":1,"bbox":[150,610,980,35]}
+{"kind":"shape","id":"sh/0bq1knm9","slide":8,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/lwz2ds3u","slide":8,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/3atcpl","slide":8,"text":"Dominator Analysis 只能判斷現有條件是否支配敏感操作，不能單獨告訴我們缺少什麼條件。\n因此先從對照軌跡推導不變量，再映射到後端變數與 Entity，最後分析檢查是否缺失、錯置或只覆蓋部分入口。"}
+{"kind":"slide","id":"sl/pv29wq","slide":9,"title":"第三年：補丁必須同時通過安全與功能驗證","textShapes":18}
+{"kind":"textbox","id":"sh/jah872lk","slide":9,"text":"第三年：補丁必須同時通過安全與功能驗證","textPreview":"第三年：補丁必須同時通過安全與功能驗證","textChars":19,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/kbqpg725","slide":9,"text":"09","textPreview":"09","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/lczq9cja","slide":9,"text":"RQ3　約束引導的 Multi-Hunk Patch 能否阻斷同類違規並保存合法 Workflow？","textPreview":"RQ3　約束引導的 Multi-Hunk Patch 能否阻斷同類違規並保存合法 Workflow？","textChars":50,"textLines":1,"bbox":[66,94,1120,40]}
+{"kind":"shape","id":"sh/6ds7ihkv","slide":9,"bbox":[70,165,560,225]}
+{"kind":"textbox","id":"sh/7e18bm1g","slide":9,"text":"候選修補","textPreview":"候選修補","textChars":4,"textLines":1,"bbox":[100,188,480,30]}
+{"kind":"textbox","id":"sh/8fapk721","slide":9,"text":"if (order.status !== \"PAID\") {\n  return conflict(\"PAYMENT_REQUIRED\");\n}\norder.status = \"SHIPPED\";","textPreview":"if (order.status !== \"PAID\") { |   return conflict(\"PAYMENT_REQUIRED\"); | } | order.status = \"SHIPPED\";","textChars":97,"textLines":4,"bbox":[105,235,475,120]}
+{"kind":"shape","id":"sh/tgjqdcjm","slide":9,"bbox":[690,165,520,106]}
+{"kind":"textbox","id":"sh/u1s7mhk7","slide":9,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[714,188,52,45]}
+{"kind":"textbox","id":"sh/v218fm1s","slide":9,"text":"安全有效性","textPreview":"安全有效性","textChars":5,"textLines":1,"bbox":[785,180,380,32]}
+{"kind":"textbox","id":"sh/3mdsz6lw","slide":9,"text":"原始 Exploit Trace 無法完成敏感操作","textPreview":"原始 Exploit Trace 無法完成敏感操作","textChars":25,"textLines":1,"bbox":[785,217,380,39]}
+{"kind":"shape","id":"sh/2l4rq1kb","slide":9,"bbox":[690,297,520,106]}
+{"kind":"textbox","id":"sh/pova1w32","slide":9,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[714,320,52,45]}
+{"kind":"textbox","id":"sh/onm9sb2h","slide":9,"text":"同類攻擊泛化","textPreview":"同類攻擊泛化","textChars":6,"textLines":1,"bbox":[785,312,380,32]}
+{"kind":"textbox","id":"sh/fitsvmlk","slide":9,"text":"替換資源、角色、順序與等價入口","textPreview":"替換資源、角色、順序與等價入口","textChars":15,"textLines":1,"bbox":[785,349,380,39]}
+{"kind":"shape","id":"sh/ehkrmhkf","slide":9,"bbox":[690,429,520,106]}
+{"kind":"textbox","id":"sh/1kvaxw3q","slide":9,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[714,452,52,45]}
+{"kind":"textbox","id":"sh/gjm9or25","slide":9,"text":"功能保存","textPreview":"功能保存","textChars":4,"textLines":1,"bbox":[785,444,380,32]}
+{"kind":"textbox","id":"sh/zexs7ql4","slide":9,"text":"合法 Workflow、鄰近正常路徑與既有測試成功","textPreview":"合法 Workflow、鄰近正常路徑與既有測試成功","textChars":25,"textLines":1,"bbox":[785,481,380,39]}
+{"kind":"shape","id":"sh/ydobylkj","slide":9,"bbox":[70,430,560,131]}
+{"kind":"textbox","id":"sh/a98v6p4r","slide":9,"text":"退化補丁排除","textPreview":"退化補丁排除","textChars":6,"textLines":1,"bbox":[100,450,500,30]}
+{"kind":"textbox","id":"sh/va1czu5c","slide":9,"text":"全面回傳 403、封鎖整個端點，或只配適單一 PoC 均不得視為成功","textPreview":"全面回傳 403、封鎖整個端點，或只配適單一 PoC 均不得視為成功","textChars":34,"textLines":1,"bbox":[100,490,490,52]}
+{"kind":"textbox","id":"sh/wbad8fmx","slide":9,"text":"真實漏洞集與受控變異集分開報告，並依專案切分測試","textPreview":"真實漏洞集與受控變異集分開報告，並依專案切分測試","textChars":24,"textLines":1,"bbox":[170,610,940,35]}
+{"kind":"shape","id":"sh/xcju1kn2","slide":9,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/idsvap4n","slide":9,"text":"跨實驗室提案討論　2026-09-10","textPreview":"跨實驗室提案討論　2026-09-10","textChars":19,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/pv29wq","slide":9,"text":"修補的目標不是讓 PoC 收到錯誤碼，而是讓敏感操作不再發生。\n第三層功能保存避免全面拒絕式補丁。通過既有測試不代表零回歸，因此再加入第一年的合法軌跡與鄰近正常路徑。"}
+{"kind":"slide","id":"sl/hamcs4","slide":10,"title":"明日希望確認的研究邊界","textShapes":17}
+{"kind":"textbox","id":"sh/2xgrqp47","slide":10,"text":"明日希望確認的研究邊界","textPreview":"明日希望確認的研究邊界","textChars":11,"textLines":1,"bbox":[64,36,1090,55]}
+{"kind":"textbox","id":"sh/pk7a14ni","slide":10,"text":"10","textPreview":"10","textChars":2,"textLines":1,"bbox":[1160,42,56,34]}
+{"kind":"textbox","id":"sh/ozy9szmx","slide":10,"text":"先確認可執行範圍，再進入完整提案與文獻定位","textPreview":"先確認可執行範圍，再進入完整提案與文獻定位","textChars":21,"textLines":1,"bbox":[66,94,900,36]}
+{"kind":"shape","id":"sh/fupsvu5g","slide":10,"bbox":[72,165,548,148]}
+{"kind":"textbox","id":"sh/etwrmp4v","slide":10,"text":"01","textPreview":"01","textChars":2,"textLines":1,"bbox":[96,190,58,42]}
+{"kind":"textbox","id":"sh/1w7axknm","slide":10,"text":"目標系統","textPreview":"目標系統","textChars":4,"textLines":1,"bbox":[172,187,410,36]}
+{"kind":"textbox","id":"sh/gvy9ofm1","slide":10,"text":"Web、Android，或先以 Web 驗證再擴展？","textPreview":"Web、Android，或先以 Web 驗證再擴展？","textChars":26,"textLines":1,"bbox":[172,235,410,54]}
+{"kind":"shape","id":"sh/rq5sra5k","slide":10,"bbox":[654,165,548,148]}
+{"kind":"textbox","id":"sh/6pwry54z","slide":10,"text":"02","textPreview":"02","textChars":2,"textLines":1,"bbox":[678,190,58,42]}
+{"kind":"textbox","id":"sh/wvu9w7id","slide":10,"text":"後端生態","textPreview":"後端生態","textChars":4,"textLines":1,"bbox":[754,187,410,36]}
+{"kind":"textbox","id":"sh/hw3q5czy","slide":10,"text":"先限定哪一至兩種語言／Framework 建立 CPG？","textPreview":"先限定哪一至兩種語言／Framework 建立 CPG？","textChars":28,"textLines":1,"bbox":[754,235,410,54]}
+{"kind":"shape","id":"sh/atcrux07","slide":10,"bbox":[72,350,548,148]}
+{"kind":"textbox","id":"sh/vul832hs","slide":10,"text":"03","textPreview":"03","textChars":2,"textLines":1,"bbox":[96,375,58,42]}
+{"kind":"textbox","id":"sh/87u9sni1","slide":10,"text":"規範來源","textPreview":"規範來源","textChars":4,"textLines":1,"bbox":[172,372,410,36]}
+{"kind":"textbox","id":"sh/983q1szm","slide":10,"text":"全自動推導、少量種子規則，或 Human-in-the-loop？","textPreview":"全自動推導、少量種子規則，或 Human-in-the-loop？","textChars":33,"textLines":1,"bbox":[172,420,410,54]}
+{"kind":"shape","id":"sh/m5srqd0b","slide":10,"bbox":[654,350,548,148]}
+{"kind":"textbox","id":"sh/n618zihg","slide":10,"text":"04","textPreview":"04","textChars":2,"textLines":1,"bbox":[678,375,58,42]}
+{"kind":"textbox","id":"sh/s3e94ril","slide":10,"text":"評估材料","textPreview":"評估材料","textChars":4,"textLines":1,"bbox":[754,372,410,36]}
+{"kind":"textbox","id":"sh/t4nadwzq","slide":10,"text":"真實漏洞、教學平台、自建案例與受控變異如何配置？","textPreview":"真實漏洞、教學平台、自建案例與受控變異如何配置？","textChars":24,"textLines":1,"bbox":[754,420,410,54]}
+{"kind":"shape","id":"sh/1kjqhcra","slide":10,"bbox":[170,562,940,70]}
+{"kind":"textbox","id":"sh/0ja9orap","slide":10,"text":"今天需要的結論：核心假說是否值得做，以及第一年應縮到哪裡","textPreview":"今天需要的結論：核心假說是否值得做，以及第一年應縮到哪裡","textChars":28,"textLines":1,"bbox":[205,578,870,38]}
+{"kind":"shape","id":"sh/fi18fm94","slide":10,"bbox":[64,682,1152,1]}
+{"kind":"textbox","id":"sh/ehsrmhsj","slide":10,"text":"討論焦點　核心假說、研究邊界、可取得資料","textPreview":"討論焦點　核心假說、研究邊界、可取得資料","textChars":20,"textLines":1,"bbox":[64,687,900,18]}
+{"kind":"notes","id":"nt/hamcs4","slide":10,"text":"結尾不要向教授詢問所有細節。希望取得兩個明確結論：核心假說是否具有研究價值，以及第一年應限制在哪一種系統與漏洞範圍。\n若時間有限，優先討論目標系統與規範來源，因為兩者直接決定資料集與自動化程度。"}
