@@ -1,0 +1,12 @@
+# <type>(<scope>): <subject> (max 72 chars, no trailing period)
+# Allowed types: feat, fix, refactor, docs, test, chore, style, perf, security
+# Example: feat(core): implement robust async retry pipeline
+#
+# 1. Detail change item 1 in English with technical reasoning.
+# 2. Detail change item 2 in English.
+#
+# ---
+# Checklist:
+# - [ ] Atomic commit (passed revert test)
+# - [ ] Commit header <= 72 characters without trailing period
+# - [ ] Numbered technical body in English
