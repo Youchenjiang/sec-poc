@@ -1,10 +1,28 @@
+# ==============================================================================
+# 🤖 PR-Agent AI Code Review (智慧 PR 審查與代碼改進建議)
+#
+# 【功能說明】
+# 整合 CodiumAI PR-Agent，自動在 Pull Request 建立或更新時進行 AI 代碼審查，
+# 產生程式碼摘要、改進建議、潛在缺陷警示與自動標籤。
+#
+# 【安全性與韌性保護】
+# 1. 具備 Secret 預檢：若 Repo 未設置 OPENAI_KEY 或 SILICONFLOW_API_KEY，
+#    會輸出 GitHub Notice 提示並優雅跳過，不會亮紅燈。
+# 2. continue-on-error: true：AI 服務逾時或配額不足時，不阻擋正常的 PR 合併。
+# 3. 排除 Bot 觸發：防止機器人自我對話循環。
+#
+# 【設定需求】
+# 若需啟用 AI 審查，請至 GitHub Repository -> Settings -> Secrets and variables -> Actions
+# 新增 `OPENAI_KEY` 或 `SILICONFLOW_API_KEY`。
+# ==============================================================================
+
 name: PR Agent AI Review
 
 on:
   pull_request:
     types: [opened, reopened, ready_for_review]
   issue_comment:
-    types: [created, edited]
+    types: [created]
 
 permissions:
   pull-requests: write
@@ -13,11 +31,34 @@ permissions:
 
 jobs:
   pr_agent_job:
+    name: AI Code Review
+    # 避免機器人帳號觸發迴圈
+    if: ${{ github.event.sender.type != 'Bot' }}
     runs-on: ubuntu-latest
-    name: Run PR Agent
+    # AI 審查作為輔助建議，不阻擋 CI 合併
+    continue-on-error: true
     steps:
-      - name: PR Agent action
-        uses: Codium-ai/pr-agent@main
+      - name: Check API Key Configuration
+        id: check_key
         env:
           OPENAI_KEY: ${{ secrets.OPENAI_KEY }}
+          SILICONFLOW_KEY: ${{ secrets.SILICONFLOW_API_KEY }}
+        run: |
+          if [ -n "$OPENAI_KEY" ] || [ -n "$SILICONFLOW_KEY" ]; then
+            echo "has_key=true" >> $GITHUB_OUTPUT
+            echo "API key detected. Proceeding to AI review."
+          else
+            echo "has_key=false" >> $GITHUB_OUTPUT
+            echo "::notice title=PR Agent Skipped::OPENAI_KEY / SILICONFLOW_API_KEY secret is not configured. AI review skipped gracefully."
+          fi
+
+      - name: Run PR Agent Action
+        if: steps.check_key.outputs.has_key == 'true'
+        uses: the-pr-agent/pr-agent@8e4d32e5497defd43c023a404f73560c62728961
+        env:
+          OPENAI_KEY: ${{ secrets.SILICONFLOW_API_KEY || secrets.OPENAI_KEY }}
+          OPENAI_API_BASE: "https://api.siliconflow.com/v1"
+          CONFIG__MODEL: "openai/Qwen/Qwen3-8B"
+          CONFIG__CUSTOM_MODEL_MAX_TOKENS: "65536"
+          CONFIG__PR_ACTIONS: '["opened", "reopened", "ready_for_review", "synchronize"]'
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

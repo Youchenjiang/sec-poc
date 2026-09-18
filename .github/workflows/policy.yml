@@ -1,3 +1,19 @@
+# ==============================================================================
+# 🚦 Repository Policy & Conventional Commit Gatekeeper (PR 與提交看門狗)
+#
+# 【功能說明】
+# 1. 嚴格驗證 PR 標題與所有 Commit Subject 是否遵循 Conventional Commits 格式：
+#    `<type>(<scope>): <subject>` 或 `<type>: <subject>`
+# 2. 長度限制：標頭不可超過 72 字元，且結尾不可帶句號 (`.`)。
+# 3. 杜絕模糊提交：禁止使用 `update`, `misc`, `stuff`, `changes`, `fix bug` 等空洞主旨。
+# 4. PR 元件檢查：自動指派作者（Author Auto-assign），提醒缺失的 Label 與 Milestone。
+#
+# 【分級報告機制】
+# - ❌ Blocker (硬性錯誤)：格式不符、超長、帶句號、模糊字 -> 觸發 `core.setFailed()` 阻擋合併。
+# - ⚠️ Warning (軟性提醒)：缺少 Label、未關聯 Milestone -> 輸出警告提醒補件，不阻擋合併。
+# - 📋 Step Summary：在 GitHub Actions Summary 面板以 Markdown 表格條列檢驗結果與修復指令。
+# ==============================================================================
+
 name: Repository Policy
 
 on:
@@ -10,10 +26,10 @@ permissions:
 
 jobs:
   conventional-policy:
-    name: PR and commit policy
+    name: PR and Commit Policy Validation
     runs-on: ubuntu-latest
     steps:
-      - name: Validate PR title and commit subjects
+      - name: Validate PR Title, Commits & Metadata
         uses: actions/github-script@v8
         with:
           script: |
@@ -29,52 +45,64 @@ jobs:
               "security",
             ];
             const allowedScopes = [
-              "cli",
               "core",
+              "ui",
+              "web",
+              "cli",
               "shell",
               "msix",
-              "web",
-              "ui",
+              "study",
+              "plan",
+              "ctfd",
+              "labs",
+              "challenge",
+              "plugin",
               "docs",
               "ci",
               "deps",
+              "sec",
               "store",
               "agent",
-              "sec",
             ];
+
             const typePattern = allowedTypes.join("|");
             const scopePattern = allowedScopes.join("|");
-            const pattern = new RegExp(
-              `^(${typePattern})(?:\\((${scopePattern})\\))?: [a-z0-9].*$`,
-            );
+            const regex = new RegExp(`^(${typePattern})(?:\\((${scopePattern})\\))?: [a-z0-9].*$`);
 
-            function validateSubject(subject, label, maxLength = 72) {
-              subject = subject.trim();
-              const errors = [];
-              if (!pattern.test(subject)) {
-                errors.push(
-                  `${label} must match <type>(<scope>): <description> or <type>: <description> with an allowed type/scope.`,
-                );
+            const blockers = [];
+            const warnings = [];
+            const summaryRows = [];
+
+            function checkSubject(subject, label, maxLength = 72) {
+              const text = (subject || "").trim();
+              const issues = [];
+              if (!regex.test(text)) {
+                issues.push("Does not match `<type>(<scope>): <subject>` or `<type>: <subject>` with an allowed type/scope.");
               }
-              if (subject.endsWith(".")) {
-                errors.push(`${label} must not end with a period.`);
+              if (text.endsWith(".")) {
+                issues.push("Must not end with a trailing period (`.`).");
               }
-              if (subject.length > maxLength) {
-                errors.push(`${label} must be ${maxLength} characters or less.`);
+              if (text.length > maxLength) {
+                issues.push(`Length (${text.length} chars) exceeds maximum ${maxLength} chars.`);
               }
-              const description = subject.replace(
-                new RegExp(`^(${typePattern})(?:\\((${scopePattern})\\))?:\\s+`),
-                "",
-              );
-              if (/^(update|misc|stuff|changes|fix bug|bug fix)$/i.test(description)) {
-                errors.push(`${label} description is too vague.`);
+              const desc = text.replace(new RegExp(`^(${typePattern})(?:\\((${scopePattern})\\))?:\\s+`), "");
+              if (/^(update|misc|stuff|changes|fix bug|bug fix)$/i.test(desc)) {
+                issues.push("Description is too vague (avoid 'update', 'misc', 'fix bug').");
               }
-              return errors;
+              return issues;
             }
 
-            const failures = [];
-            failures.push(...validateSubject(context.payload.pull_request.title, "PR title", 72));
+            // 1. Check PR Title
+            const prTitle = context.payload.pull_request.title;
+            const titleIssues = checkSubject(prTitle, "PR Title", 72);
+            if (titleIssues.length > 0) {
+              blockers.push({ target: "PR Title", text: prTitle, issues: titleIssues });
+              summaryRows.push(["PR Title", `\`${prTitle}\``, "❌ Failed", titleIssues.join("<br>")]);
+            } else {
+              summaryRows.push(["PR Title", `\`${prTitle}\``, "✅ Passed", "-"]);
+            }
 
+            // 2. Check Commits
             const commits = await github.paginate(github.rest.pulls.listCommits, {
               owner: context.repo.owner,
               repo: context.repo.repo,
@@ -82,24 +110,25 @@ jobs:
               per_page: 100,
             });
 
-            for (const commit of commits) {
-              const subject = commit.commit.message.split("\n")[0];
-              for (const error of validateSubject(subject, `Commit ${commit.sha.slice(0, 7)}`, 72)) {
-                failures.push(`${error}\n  subject: ${subject}`);
+            for (const c of commits) {
+              const shaShort = c.sha.slice(0, 7);
+              const firstLine = (c.commit.message || "").split("\n")[0].trim();
+              // Ignore merge or fixup commits
+              if (/^(Merge|Revert|fixup!|squash!)/.test(firstLine)) {
+                summaryRows.push([`Commit ${shaShort}`, `\`${firstLine}\``, "⚪ Ignored", "Merge / fixup commit"]);
+                continue;
+              }
+              const commitIssues = checkSubject(firstLine, `Commit ${shaShort}`, 72);
+              if (commitIssues.length > 0) {
+                blockers.push({ target: `Commit ${shaShort}`, text: firstLine, issues: commitIssues });
+                summaryRows.push([`Commit ${shaShort}`, `\`${firstLine}\``, "❌ Failed", commitIssues.join("<br>")]);
+              } else {
+                summaryRows.push([`Commit ${shaShort}`, `\`${firstLine}\``, "✅ Passed", "-"]);
               }
             }
 
-            if (failures.length > 0) {
-              core.setFailed(failures.join("\n\n"));
-            }
-
-      - name: Validate PR metadata (assignee, labels, milestone)
-        uses: actions/github-script@v8
-        with:
-          script: |
+            // 3. Check Metadata (Warnings only, non-blocking)
             const pr = context.payload.pull_request;
-            const failures = [];
-
             if (!pr.assignees || pr.assignees.length === 0) {
               try {
                 await github.rest.issues.addAssignees({
@@ -109,14 +138,35 @@ jobs:
                   assignees: [pr.user.login],
                 });
               } catch (err) {
-                core.warning(`Could not auto-assign author: ${err.message}`);
+                warnings.push(`Auto-assign author failed: ${err.message}`);
               }
             }
 
             if (!pr.labels || pr.labels.length === 0) {
-              failures.push("PR must have at least one label.");
+              warnings.push("No labels attached to PR. Please add a relevant scope/type label.");
             }
 
-            if (failures.length > 0) {
-              core.setFailed(failures.join("\n\n"));
+            // 4. Output Summary Table
+            await core.summary
+              .addHeading("📋 Repository Policy Validation Summary", 2)
+              .addTable([
+                [{ data: "Item", header: true }, { data: "Subject", header: true }, { data: "Status", header: true }, { data: "Details", header: true }],
+                ...summaryRows,
+              ])
+              .write();
+
+            if (warnings.length > 0) {
+              for (const w of warnings) {
+                core.warning(`[Policy Warning] ${w}`);
+              }
+            }
+
+            // 5. Hard Fail only on Blocker errors
+            if (blockers.length > 0) {
+              for (const b of blockers) {
+                for (const iss of b.issues) {
+                  core.error(`[Policy Blocker] ${b.target}: ${iss}\n  Subject: "${b.text}"`);
+                }
+              }
+              core.setFailed(`Repository policy check failed with ${blockers.length} blocking error(s). Review the Step Summary table above for details.`);
             }
