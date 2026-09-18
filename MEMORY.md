@@ -12,13 +12,14 @@
 ---
 
 ## 📋 Current Active Tasks
-- 發布 GitHub Release `v0.1.0`（受控測試系統 v1 基線）。
-- 針對外部審查/詰問（二階段探詢與直接定位的盲區），將測試系統推進至 v2（複合業務流程 + 異步 Worker 漏校驗之不可分割 Multi-hunk 案例）。
+- 已完成 `v0.1.0` 基線與 `v0.1.1` CI/CD 安全防護升級發布。
+- 專案轉型規劃：將 `sec-poc` 從單一退款案例平台升級為「可插拔商業邏輯弱點與 Multi-hunk APR Benchmark 評測套件」（Pluggable Case Benchmark Architecture）。
+- 實裝 Case-002（複合審批業務 + 異步 Worker 漏校驗之不可分割 Multi-hunk 案例）。
 
 ---
 
 ## 🏗️ Architectural Context
-- **Project**: POC（受控測試系統與資安漏洞 PoC 研究）
+- **Project**: POC / sec-poc（商業邏輯漏洞受控評測基準平台）
 - **Core Components**:
   - `test-system/`: Node 24 + 內建 `node:sqlite` 零外部依賴測試平台（多角色退款審批、BOLA 弱點與 fixed 模式）
   - `test-system/poc/`: 黑箱 PoC 軌跡腳本（`npm run poc:legal`, `npm run poc:bola`）
@@ -37,4 +38,5 @@
 - 針對「二階段探詢與靜態分析」詰問，確認防禦論述核心在於：
   1. 黑箱探詢缺乏語意 Oracle 與異步/Worker 盲區；
   2. 傳統定位無法處理 Missing-Guard 與不可分割 Multi-hunk。
-- 準備發布 `v0.1.0` 作為單點 BOLA 基線版本，隨後實裝 v2 複合流程案例。
+- 已正式發布 `v0.1.0`（單點 BOLA 基線版本）與 `v0.1.1`（CodeQL、TruffleHog、PR-Agent 與政策 CI 升級）。
+- 確立專案轉型方向：維持獨立 Repo，不硬合併進 `sec-compendium` 或 `sec-code-research`，而是擴充為標準化 Benchmark 平台，兼具學術 Ground Truth 與一鍵匯出 CTFd 題目之雙重價值。
