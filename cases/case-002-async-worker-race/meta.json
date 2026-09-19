@@ -1,0 +1,36 @@
+{
+  "id": "case-002-async-worker-race",
+  "title": "複合審批異步出納之條件競爭與漏校驗 (TOCTOU & Missing-Guard)",
+  "cwe": ["CWE-362", "CWE-862", "CWE-841"],
+  "severity": "HIGH",
+  "description": "多角色退款審批流程中，主管審批核准至背景 Worker 執行出納之間存在時間差。客戶發起取消退款時，API 缺乏狀態鎖允許取消，而異步 Worker 執行出納前缺乏狀態重驗證 (Missing Guard)，導致已取消訂單仍被扣款出納之財務邏輯缺陷。",
+  "complexity": {
+    "roles": ["customer", "supervisor", "finance_worker"],
+    "tenants": ["acme", "globex"],
+    "async_components": ["queue_worker"],
+    "hunk_count": 3,
+    "is_inseparable_multihunk": true
+  },
+  "oracle": {
+    "test_suite": "test/oracle.test.mjs",
+    "legal_script": "poc/legal-workflow.mjs",
+    "exploit_script": "poc/exploit-race.mjs"
+  },
+  "multihunk_breakdown": [
+    {
+      "hunk": 1,
+      "module": "src/server.mjs",
+      "purpose": "API 狀態鎖：取消請求時若訂單正在出納佇列中則拒絕操作"
+    },
+    {
+      "hunk": 2,
+      "module": "src/worker.mjs",
+      "purpose": "Worker 守衛條件：執行扣款前原子 CAS 驗證狀態是否仍為 APPROVED 與版本匹配"
+    },
+    {
+      "hunk": 3,
+      "module": "src/db.mjs",
+      "purpose": "DB 狀態約束：增加樂觀鎖版本號 (version) 與出納鎖定時間戳記"
+    }
+  ]
+}
