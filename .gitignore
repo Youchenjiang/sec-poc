@@ -3,8 +3,8 @@
 
 # 執行期產物
 build/node_modules/
-
-# test-system 執行期產物（另有 test-system/.gitignore 涵蓋 db/、traces/）
+cases/*/db/
+*.db*
 tmp/
 
 # 本地計畫與研討 PDF 文件

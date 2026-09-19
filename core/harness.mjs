@@ -12,19 +12,23 @@
  *   node core/harness.mjs --case=case-001 --poc=legal
  *   node core/harness.mjs --case=case-001 --poc=bola
  *   node core/harness.mjs --verify (跑全部案例的測試)
+ *   node core/harness.mjs --baseline (執行全部案例 Ground Truth 基線評測並產出報告)
+ *   node core/harness.mjs --eval --case=case-002 --patch=<path-to-diff> (評測外部 Patch)
  */
 
 import { readdirSync, readFileSync, existsSync } from "node:fs";
 import { resolve, join } from "node:path";
 import { spawnSync } from "node:child_process";
 import { pathToFileURL } from "node:url";
+import { evaluateCase } from "./evaluator.mjs";
+import { calculateMetrics, formatConsoleReport, saveReports } from "./reporter.mjs";
 
 const ROOT_DIR = resolve(import.meta.dirname, "..");
 const CASES_DIR = resolve(ROOT_DIR, "cases");
 
 /**
  * 掃描 cases/ 目錄，讀取所有合法案例的 meta.json。
- * @returns {Array<{ dir: string, meta: Object }>}
+ * @returns {Array<{ dir: string, meta: Object, fullPath: string }>}
  */
 export function loadAllCases() {
   if (!existsSync(CASES_DIR)) return [];
@@ -105,13 +109,15 @@ async function main() {
   if (args.length === 0 || args.includes("--help") || args.includes("-h")) {
     console.log(`
 Benchmark CLI Harness 使用說明:
-  --list                      列出所有已註冊的案例
-  --case=<id>                 指定特定案例 (如 --case=case-001)
-  --verify                    執行單元與 Oracle 回歸測試
-  --reset                     重置案例資料庫至乾淨 seed 狀態
-  --snapshot                  將案例目前資料庫建立快照
-  --restore                   從快照快速還原案例資料庫
-  --poc=<legal|bola|...>      執行案例的黑箱 PoC 腳本
+  --list                          列出所有已註冊的案例
+  --case=<id>                     指定特定案例 (如 --case=case-001)
+  --verify                        執行單元與 Oracle 回歸測試
+  --reset                         重置案例資料庫至乾淨 seed 狀態
+  --snapshot                      將案例目前資料庫建立快照
+  --restore                       從快照快速還原案例資料庫
+  --poc=<legal|bola|exploit|demo> 執行案例的黑箱 PoC 腳本
+  --baseline                      執行全部案例 Ground Truth 基線評測並產生報告
+  --eval --patch=<path>           評測外部 Patch 補丁修復效果
 `);
     return;
   }
@@ -121,11 +127,34 @@ Benchmark CLI Harness 使用說明:
     return;
   }
 
+  // 1. 全量 Ground Truth 基線評測 (--baseline)
+  if (args.includes("--baseline")) {
+    console.log("\n🚀 啟動 Benchmark 全案例 Ground Truth 基線跑分評測...");
+    const all = loadAllCases();
+    const results = [];
+    for (const c of all) {
+      console.log(`\n⚡ 評測案例 [${c.meta.id}]...`);
+      const res = await evaluateCase(c, { useFixedMode: true });
+      results.push(res);
+    }
+    const metrics = calculateMetrics(results);
+    const consoleReport = formatConsoleReport(metrics, results);
+    console.log(consoleReport);
+
+    saveReports(metrics, results, {
+      mdPath: resolve(ROOT_DIR, "reports/benchmark-report.md"),
+      jsonPath: resolve(ROOT_DIR, "reports/benchmark-report.json"),
+      metaInfo: { targetLabel: "Ground Truth Fixed Baseline" },
+    });
+    console.log("📄 評測跑分報告已輸出至: reports/benchmark-report.md & reports/benchmark-report.json");
+    return;
+  }
+
   // 解析 --case=<id>
   const caseArg = args.find((a) => a.startsWith("--case="));
   const caseId = caseArg ? caseArg.split("=")[1] : null;
 
-  // 若未指定 --case 但有 --verify，執行所有案例的測試
+  // 2. 執行全案例回歸測試 (--verify)
   if (!caseId && args.includes("--verify")) {
     const all = loadAllCases();
     let failedCount = 0;
@@ -155,14 +184,27 @@ Benchmark CLI Harness 使用說明:
 
   console.log(`\n🎯 選定案例: [${targetCase.meta.id}] ${targetCase.meta.title}`);
 
-  // 1. 執行測試
+  // 3. 外部 Patch 評測 (--eval)
+  if (args.includes("--eval")) {
+    const patchArg = args.find((a) => a.startsWith("--patch="));
+    const patchPath = patchArg ? patchArg.split("=")[1] : null;
+    console.log(`\n🔍 評測目標案例: ${targetCase.meta.id}`);
+    if (patchPath) console.log(`   外部 Patch 檔案: ${patchPath}`);
+
+    const res = await evaluateCase(targetCase, { patchPath });
+    const metrics = calculateMetrics([res]);
+    console.log(formatConsoleReport(metrics, [res]));
+    return;
+  }
+
+  // 4. 執行單一案例測試
   if (args.includes("--verify")) {
     const testRel = `cases/${targetCase.dir}/${targetCase.meta.oracle?.test_suite ?? "test/oracle.test.mjs"}`;
     const code = runTestFile(testRel);
     process.exit(code);
   }
 
-  // 2. 執行 DB 重置 / 快照 / 還原
+  // 5. 執行 DB 重置 / 快照 / 還原
   const seedModulePath = join(targetCase.fullPath, "src/seed.mjs");
   if (existsSync(seedModulePath)) {
     const seedModule = await import(pathToFileURL(seedModulePath).href);
@@ -183,7 +225,7 @@ Benchmark CLI Harness 使用說明:
     }
   }
 
-  // 3. 執行 PoC 腳本
+  // 6. 執行 PoC 腳本
   const pocArg = args.find((a) => a.startsWith("--poc="));
   if (pocArg) {
     const pocType = pocArg.split("=")[1];

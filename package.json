@@ -7,11 +7,15 @@
   "scripts": {
     "bench": "node core/harness.mjs",
     "bench:list": "node core/harness.mjs --list",
+    "bench:baseline": "node core/harness.mjs --baseline",
+    "bench:eval": "node core/harness.mjs --eval",
     "test": "node core/harness.mjs --verify",
     "verify": "node core/harness.mjs --verify",
     "verify:case1": "node core/harness.mjs --case=case-001 --verify",
+    "verify:case2": "node core/harness.mjs --case=case-002 --verify",
     "poc:legal": "node core/harness.mjs --case=case-001 --poc=legal",
     "poc:bola": "node core/harness.mjs --case=case-001 --poc=bola",
+    "poc:race": "node core/harness.mjs --case=case-002 --poc=exploit",
     "reset": "node core/harness.mjs --case=case-001 --reset",
     "snapshot": "node core/harness.mjs --case=case-001 --snapshot",
     "restore": "node core/harness.mjs --case=case-001 --restore"
