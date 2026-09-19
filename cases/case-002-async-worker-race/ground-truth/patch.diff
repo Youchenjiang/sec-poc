@@ -1,0 +1,48 @@
+diff --git a/src/db.mjs b/src/db.mjs
+--- a/src/db.mjs
++++ b/src/db.mjs
+@@ -28,6 +28,8 @@ export function createSchema(db) {
+       amount_cents     INTEGER NOT NULL,
+       reason           TEXT NOT NULL,
+       status           TEXT NOT NULL DEFAULT 'REQUESTED',
++      version          INTEGER NOT NULL DEFAULT 1,
++      payout_locked_at TEXT,
+       created_at       TEXT NOT NULL,
+       updated_at       TEXT NOT NULL
+     );
+diff --git a/src/server.mjs b/src/server.mjs
+--- a/src/server.mjs
++++ b/src/server.mjs
+@@ -95,6 +95,14 @@ export function createCase002System({ db }) {
+       if (["REFUNDED", "REJECTED"].includes(refund.status)) {
+         return jsonResponse(res, 400, { error: `Cannot cancel refund with status ${refund.status}` });
+       }
++
++      // [Hunk 1 Guard]: 若出納 Worker 正在處理金流扣款則互斥鎖定
++      if (refund.payout_locked_at !== null) {
++        return jsonResponse(res, 409, {
++          error: "Payout is already in progress and locked by finance worker; cannot cancel",
++        });
++      }
++
+       stmtCancel.run(nowIso(), refundId);
+       const updated = stmtGetRefundById.get(refundId);
+       return jsonResponse(res, 200, updated);
+diff --git a/src/worker.mjs b/src/worker.mjs
+--- a/src/worker.mjs
++++ b/src/worker.mjs
+@@ -35,6 +35,16 @@ export async function runPayoutPass(db) {
+   for (const item of candidates) {
+     processed++;
+     const now = nowIso();
++
++    // [Hunk 2 Guard]: 執行金流前先原子搶鎖並遞增版本 (Compare-and-Swap)
++    const lockRes = stmtLockRefund.run(now, item.id);
++    if (lockRes.changes === 0) {
++      skipped++;
++      continue;
++    }
++
+     if (simulateBankDelayMs > 0) {
+       await setTimeout(simulateBankDelayMs);
+     }
