@@ -8,6 +8,8 @@
 ## 🔑 User Preferences
 - **Language**: 繁體中文 preferred for casual conversation; code/commits in English.
 - **Style**: Direct, no fluff. Get things done with high engineering rigor.
+- **Atomic Commits & Context Separation**: 嚴格落實原子化提交！嚴格區分不同脈絡（純檔案搬移、核心模組抽取、業務邏輯實作、測試斷言、文檔知識庫、CI配置），必須切分在獨立 Commit 上。每個 Commit 嚴格遵循「單一目的原則」並通過「The Revert Test」，禁止跨脈絡混雜或一次性大包裹提交（Mega-commits）。
+
 
 ---
 
