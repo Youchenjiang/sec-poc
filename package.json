@@ -1,0 +1,19 @@
+{
+  "name": "sec-poc",
+  "version": "0.1.1",
+  "private": true,
+  "type": "module",
+  "description": "受控商業邏輯弱點與 Multi-hunk APR 評測基準平台（零外部依賴 Node + node:sqlite）",
+  "scripts": {
+    "bench": "node core/harness.mjs",
+    "bench:list": "node core/harness.mjs --list",
+    "test": "node core/harness.mjs --verify",
+    "verify": "node core/harness.mjs --verify",
+    "verify:case1": "node core/harness.mjs --case=case-001 --verify",
+    "poc:legal": "node core/harness.mjs --case=case-001 --poc=legal",
+    "poc:bola": "node core/harness.mjs --case=case-001 --poc=bola",
+    "reset": "node core/harness.mjs --case=case-001 --reset",
+    "snapshot": "node core/harness.mjs --case=case-001 --snapshot",
+    "restore": "node core/harness.mjs --case=case-001 --restore"
+  }
+}
