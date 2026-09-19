@@ -1,0 +1,50 @@
+{
+  "metrics": {
+    "totalCases": 2,
+    "remediatedCount": 2,
+    "regressionFreeCount": 2,
+    "remediationRate": 100,
+    "regressionFreeRate": 100,
+    "avgHunkCount": 2,
+    "totalDurationMs": 1644
+  },
+  "results": [
+    {
+      "caseId": "case-001-refund-bola",
+      "title": "多角色退款審批平台之 BOLA 越權漏洞",
+      "applied": true,
+      "remediated": true,
+      "regressionFree": true,
+      "testsPass": 9,
+      "testsTotal": 9,
+      "exitCode": 0,
+      "diffStats": {
+        "hunkCount": 1,
+        "files": [],
+        "insertions": 0,
+        "deletions": 0
+      },
+      "durationMs": 881,
+      "outputSnippet": " show where the warning was created)\n✔ seed 完整性：tenant/user/refund 數量與樣本狀態 (5.1267ms)\n✔ 合法流程全路徑成功（建立→審核→核准→退款→確認 REFUNDED） (108.9234ms)\n✔ 狀態機：非法轉移被拒（直接退款、跳過審核即核准） (26.906ms)\n✔ SoD／角色：customer 不可核准或執行退款，未授權請求回 401 (21.3924ms)\n✔ vulnerable：BOLA 成功（customer 可讀其他 owner 的退款） (9.2681ms)\n✔ fixed：BOLA 被拒（同 tenant 跨 owner 與跨 tenant 皆 404，不洩漏資料） (10.994ms)\n✔ fixed 保留合法流程（無功能回歸） (16.06ms)\n✔ worker：執行 APPROVED 退款並以 revalidation 防止重複執行 (1.2002ms)\n✔ reset round-trip：弄壞 DB → 快照還原 → 再從 seed 重建，均可驗證恢復 (258.9602ms)\nℹ tests 9\nℹ suites 0\nℹ pass 9\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 659.0912\n"
+    },
+    {
+      "caseId": "case-002-async-worker-race",
+      "title": "複合審批異步出納之條件競爭與漏校驗 (TOCTOU & Missing-Guard)",
+      "applied": true,
+      "remediated": true,
+      "regressionFree": true,
+      "testsPass": 8,
+      "testsTotal": 8,
+      "exitCode": 0,
+      "diffStats": {
+        "hunkCount": 3,
+        "files": [],
+        "insertions": 0,
+        "deletions": 0
+      },
+      "durationMs": 763,
+      "outputSnippet": "as created)\n✔ 1. seed 完整性：租戶、使用者與初期退款單狀態 (4.3167ms)\n✔ 2. 合法全路徑：建立 → 主管核准 → Worker 出納成功並寫入金流紀錄 (138.8313ms)\n✔ 3. 客戶取消保護：未核准前正常取消，Worker 絕不處理 (22.0641ms)\n✔ 4. vulnerable 重現：TOCTOU 條件競爭導致已取消訂單被 Worker 盲目覆蓋扣款 (50.4967ms)\n✔ 5. fixed 完整修復：Hunk 1 + Hunk 2 協同阻斷條件競爭，財務狀態一致 (45.59ms)\n✔ 6. 消融測試 1 (Ablation Hunk 1 Only: 只修 API 拒絕，Worker 仍無原子 CAS 守衛) (46.2047ms)\n✔ 7. 消融測試 2 (Ablation Hunk 2 Only: 只修 Worker CAS，API 缺少狀態鎖) (44.2935ms)\n✔ 8. 不可分割性結論斷言：Hunk 1 (API Guard) 與 Hunk 2 (Worker Guard) 彼此依存，缺一不可 (0.2731ms)\nℹ tests 8\nℹ suites 0\nℹ pass 8\nℹ fail 0\nℹ cancelled 0\nℹ skipped 0\nℹ todo 0\nℹ duration_ms 564.7971\n"
+    }
+  ],
+  "generatedAt": "2026-09-19T07:00:17.352Z"
+}

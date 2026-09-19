@@ -254,7 +254,10 @@ Benchmark CLI Harness 使用說明:
   }
 }
 
-main().catch((err) => {
-  console.error("Harness 執行失敗:", err);
-  process.exit(1);
-});
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch((err) => {
+    console.error("Harness 執行失敗:", err);
+    process.exit(1);
+  });
+}
+
