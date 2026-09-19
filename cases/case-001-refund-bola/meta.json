@@ -1,0 +1,19 @@
+{
+  "id": "case-001-refund-bola",
+  "title": "多角色退款審批平台之 BOLA 越權漏洞",
+  "cwe": ["CWE-862", "CWE-639"],
+  "severity": "HIGH",
+  "description": "多租戶退款審批系統中，一般 customer 角色可透過直接請求 IDOR 存取同租戶或其他租戶使用者的退款記錄與審批狀態。",
+  "complexity": {
+    "roles": ["customer", "supervisor", "finance"],
+    "tenants": ["acme", "globex"],
+    "hunk_count": 1,
+    "is_inseparable_multihunk": false
+  },
+  "oracle": {
+    "test_suite": "test/oracle.test.mjs",
+    "legal_script": "poc/legal-workflow.mjs",
+    "exploit_script": "poc/exploit-bola.mjs",
+    "demo_script": "poc/demo-three-tier.mjs"
+  }
+}
